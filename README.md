@@ -1,30 +1,26 @@
 # ResQAI
 
-ResQAI is an AI-powered disaster risk and emergency response system. It is being developed as an Information Science and Engineering project to monitor real-world emergency information, assess risk, prioritize incidents, and present useful response information.
+ResQAI is a project for collecting and organizing disaster information so that it can be easier to understand and use during emergency response. It is designed for many disaster types, not only earthquakes.
 
-## Problem Statement
+## What ResQAI Does
 
-Emergency information can be distributed across different sources and may be difficult to compare quickly. ResQAI will provide a structured way to collect, normalize, assess, and display disaster-related information. The system will support monitoring and prioritization; it will not claim to predict future disasters unless a later, validated model supports that claim.
+The current version has a common format for all disaster records and connects to the public USGS earthquake feed. It:
 
-## Objectives
+1. Downloads recent earthquake information.
+2. Checks that the response has the expected format.
+3. Converts the data into a simple, consistent ResQAI format.
+4. Skips records that are missing important information instead of inventing values.
+5. Reports clear errors when the data source cannot be reached or is invalid.
 
-- Collect reliable real-world disaster and emergency information.
-- Normalize incoming information into a consistent application format.
-- Prepare data for analysis and, where justified, machine learning.
-- Assess incident severity or priority using explainable logic and validated models.
-- Provide useful emergency-response information.
-- Present results through an interactive dashboard.
-- Keep the implementation understandable, testable, and suitable for academic demonstration.
+In simple terms, ResQAI takes information from different disaster sources and prepares it for one emergency-response dashboard.
 
-## Planned Features
+Supported disaster categories include earthquakes, floods, wildfires, storms, hurricanes, tornadoes, landslides, tsunamis, volcanic eruptions, droughts, and extreme temperatures. The shared format is ready for these categories; live source adapters will be added as each source is verified.
 
-- Real-world disaster data integration.
-- Data cleaning and preprocessing.
-- Historical dataset analysis.
-- Risk assessment and incident prioritization.
-- Emergency-response information services.
-- Interactive dashboard.
-- Optional GenAI or RAG support only if it provides clear value and uses reliable sources.
+## Current Status
+
+The data collection and normalization foundation is working and tested. Earthquakes are currently connected through USGS, and the normalizer can already represent other disaster types. Additional live sources, machine learning, risk prediction, a database, GenAI/RAG, and a finished dashboard are future additions.
+
+ResQAI is intended to organize and prioritize information. It does not predict disasters.
 
 ## Technology Stack
 
@@ -37,7 +33,7 @@ Current implementation:
 
 No machine-learning library is used in the current implementation.
 
-## Architecture Overview
+## How It Works
 
 ```text
 External disaster sources
@@ -58,7 +54,7 @@ External disaster sources
       Interactive dashboard
 ```
 
-The current foundation contains the package boundaries for these components, but later-stage behavior has not been implemented yet.
+At present, data collection and normalization are implemented for the USGS earthquake source, and the common format supports other disaster types. Risk rules, emergency services, and the dashboard are planned.
 
 ## Project Structure
 
@@ -83,11 +79,9 @@ ResQAI/
     `-- test_main.py
 ```
 
-## Setup Instructions
+## Data Source
 
-## Data Source Investigation
-
-### Selected source: USGS Earthquake Catalog GeoJSON feeds
+### Current source: USGS Earthquake Catalog GeoJSON feeds
 
 - **Name:** United States Geological Survey (USGS) Earthquake Hazards Program GeoJSON feed.
 - **Information:** Recent earthquake events worldwide, including magnitude, place, time, depth, status, tsunami flag, alert, and event links.
@@ -101,6 +95,8 @@ ResQAI/
 Source documentation: <https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php>
 
 Live endpoint: <https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson>
+
+## Setup and Installation
 
 1. Open a terminal in the project directory.
 2. Create a virtual environment:

@@ -1,4 +1,4 @@
-"""Convert provider-specific earthquake records into the ResQAI format."""
+"""Convert provider records into the common ResQAI disaster format."""
 
 from __future__ import annotations
 
@@ -6,17 +6,26 @@ from datetime import datetime, timezone
 from typing import Any
 
 
-def normalize_usgs_features(payload: dict[str, Any]) -> list[dict[str, Any]]:
-    """Normalize valid USGS features, skipping records with unusable identity/location data."""
+def normalize_disaster_features(
+    payload: dict[str, Any], *, source: str, disaster_type: str
+) -> list[dict[str, Any]]:
+    """Normalize GeoJSON disaster features for any supported provider and type."""
     normalized: list[dict[str, Any]] = []
     for feature in payload.get("features", []):
-        record = _normalize_feature(feature)
+        record = _normalize_feature(feature, source=source, disaster_type=disaster_type)
         if record is not None:
             normalized.append(record)
     return normalized
 
 
-def _normalize_feature(feature: Any) -> dict[str, Any] | None:
+def normalize_usgs_features(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    """Normalize USGS earthquake features using the common disaster format."""
+    return normalize_disaster_features(payload, source="USGS", disaster_type="earthquake")
+
+
+def _normalize_feature(
+    feature: Any, *, source: str, disaster_type: str
+) -> dict[str, Any] | None:
     if not isinstance(feature, dict):
         return None
     properties = feature.get("properties")
@@ -33,10 +42,10 @@ def _normalize_feature(feature: Any) -> dict[str, Any] | None:
         return None
     return {
         "id": event_id,
-        "source": "USGS",
+        "source": source,
         "source_url": _optional_string(properties.get("url")),
-        "disaster_type": "earthquake",
-        "title": _optional_string(properties.get("title")) or "Earthquake",
+        "disaster_type": disaster_type,
+        "title": _optional_string(properties.get("title")) or disaster_type.title(),
         "location": _optional_string(properties.get("place")) or "Unknown location",
         "latitude": float(latitude),
         "longitude": float(longitude),

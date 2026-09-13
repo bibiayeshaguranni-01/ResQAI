@@ -12,7 +12,7 @@ from resqai.api.usgs_earthquakes import (
     EarthquakeResponseError,
     fetch_usgs_feed,
 )
-from resqai.data.normalization import normalize_usgs_features
+from resqai.data.normalization import normalize_disaster_features, normalize_usgs_features
 from resqai.services.disaster_data import get_current_earthquakes
 
 
@@ -67,6 +67,15 @@ class DataPipelineTests(unittest.TestCase):
         self.assertEqual(records[0]["longitude"], 12.5)
         self.assertEqual(records[0]["severity"], "unclassified")
         self.assertEqual(records[0]["felt_reports"], 12)
+
+    def test_normalizes_a_non_earthquake_disaster(self) -> None:
+        records = normalize_disaster_features(
+            sample_payload(), source="NOAA", disaster_type="wildfire"
+        )
+
+        self.assertEqual(records[0]["source"], "NOAA")
+        self.assertEqual(records[0]["disaster_type"], "wildfire")
+        self.assertEqual(records[0]["title"], "M 5.2 - 10 km north of Testville")
 
     def test_service_fetches_and_normalizes_data(self) -> None:
         records = get_current_earthquakes(opener=lambda *args, **kwargs: FakeResponse(sample_payload()))
