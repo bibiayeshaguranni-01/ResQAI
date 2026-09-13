@@ -1,4 +1,4 @@
-"""Focused tests for the Phase 2 USGS data pipeline."""
+"""Focused tests for the USGS data pipeline."""
 
 from __future__ import annotations
 
@@ -57,7 +57,7 @@ class FakeResponse:
         return json.dumps(self.payload).encode("utf-8")
 
 
-class Phase2PipelineTests(unittest.TestCase):
+class DataPipelineTests(unittest.TestCase):
     def test_normalizes_usgs_feature_into_resqai_format(self) -> None:
         records = normalize_usgs_features(sample_payload())
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 
 def main() -> None:
-    """Run the Phase 1 foundation health check."""
+    """Run the foundation health check."""
     print("ResQAI foundation is ready.")
     print("Data collection, risk assessment, and dashboard features are planned for later phases.")
 

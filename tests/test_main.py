@@ -1,4 +1,4 @@
-"""Smoke tests for the Phase 1 application foundation."""
+"""Smoke tests for the application foundation."""
 
 from contextlib import redirect_stdout
 from io import StringIO

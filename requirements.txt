@@ -1,1 +1,1 @@
-# Phase 2 uses only the Python standard library.
+# The project uses only the Python standard library.

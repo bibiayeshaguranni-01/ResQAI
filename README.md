@@ -28,14 +28,14 @@ Emergency information can be distributed across different sources and may be dif
 
 ## Technology Stack
 
-Current Phase 2:
+Current implementation:
 
 - Python 3.10 or newer: application language.
 - Python standard library: HTTP client, JSON parsing, validation, normalization, and tests.
 - `venv`: isolated project environment.
 - `unittest`: basic automated testing.
 
-No machine-learning library is used in Phase 2.
+No machine-learning library is used in the current implementation.
 
 ## Architecture Overview
 
@@ -85,7 +85,7 @@ ResQAI/
 
 ## Setup Instructions
 
-## Phase 2 Data Source Investigation
+## Data Source Investigation
 
 ### Selected source: USGS Earthquake Catalog GeoJSON feeds
 
@@ -96,7 +96,7 @@ ResQAI/
 - **API requirements:** HTTPS GET with an `Accept` header. The response is GeoJSON.
 - **API key:** Not required for this public feed.
 - **Limitations:** It covers earthquakes, not every disaster type; records can be preliminary and later revised; optional fields can be null; the all-day feed is a rolling window rather than historical storage; and USGS availability and usage policies still apply.
-- **Why suitable:** It is an official scientific source, public, structured, global, actively updated, and includes location and severity-related fields useful for ResQAI monitoring. It also keeps Phase 2 dependency-free and secret-free.
+- **Why suitable:** It is an official scientific source, public, structured, global, actively updated, and includes location and severity-related fields useful for ResQAI monitoring. It also keeps the implementation dependency-free and secret-free.
 
 Source documentation: <https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php>
 
@@ -121,7 +121,7 @@ Live endpoint: <https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_da
    python -m pip install -r requirements.txt
    ```
 
-The requirements file contains no third-party packages because Phase 2 uses only the Python standard library.
+The requirements file contains no third-party packages because the current implementation uses only the Python standard library.
 
 5. Review `.env.example`. Set the values as process environment variables when needed. The application does not automatically load `.env` files.
 
@@ -157,9 +157,9 @@ python -m unittest discover -s tests -v
 
 ## Current Scope
 
-Phase 2 adds one verified real-world data source and a normalized service boundary. It does not include machine learning, risk calculations, GenAI/RAG, persistence, or a completed dashboard. Stop here before Phase 3.
+The current implementation adds one verified real-world data source and a normalized service boundary. It does not include machine learning, risk calculations, GenAI/RAG, persistence, or a completed dashboard. Risk modeling and the dashboard remain future work.
 
-## Phase 2 Pipeline
+## Data Pipeline
 
 The public service is available through `get_current_earthquakes()`:
 
@@ -215,7 +215,7 @@ The example values are a deterministic test fixture, clearly labelled as such; n
 - `src/resqai/api/usgs_earthquakes.py`: `feed_settings()` reads configuration; `fetch_usgs_feed()` performs the request; `validate_feed()` checks the response envelope; custom exceptions distinguish failure categories.
 - `src/resqai/data/normalization.py`: `normalize_usgs_features()` converts provider records into stable ResQAI dictionaries and skips unusable records.
 - `src/resqai/services/disaster_data.py`: `get_current_earthquakes()` is the application-facing service boundary.
-- `tests/test_phase2_data_pipeline.py`: tests success, missing values, malformed data, HTTP errors, timeout behavior, and configuration validation.
+- `tests/test_data_pipeline.py`: tests success, missing values, malformed data, HTTP errors, timeout behavior, and configuration validation.
 
 ## What You Need to Configure
 
@@ -223,4 +223,4 @@ For USGS, nothing secret is required. Optionally set the feed URL and timeout sh
 
 ## What to Learn Next
 
-Learn HTTP status handling, GeoJSON structure, UTC timestamps, schema validation, dependency injection for network tests, and the difference between preliminary observations and confirmed historical data. Before Phase 3, learn how to store raw responses with provenance and how to define explainable risk rules without presenting them as disaster predictions.
+Learn HTTP status handling, GeoJSON structure, UTC timestamps, schema validation, dependency injection for network tests, and the difference between preliminary observations and confirmed historical data. Next, learn how to store raw responses with provenance and define explainable risk rules without presenting them as disaster predictions.
