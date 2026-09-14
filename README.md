@@ -1,16 +1,17 @@
 # ResQAI
 
-ResQAI is a project for collecting and organizing disaster information so that it can be easier to understand and use during emergency response. It is designed for many disaster types, not only earthquakes.
+ResQAI is a multi-disaster information platform for collecting, organizing, and preparing emergency data. It is designed to use one consistent format across many disaster types.
 
 ## What ResQAI Does
 
-The current version has a common format for all disaster records and connects to the public USGS earthquake feed. It:
+The current version provides a common format for disaster records and supports provider-specific data sources. It:
 
-1. Downloads recent earthquake information.
-2. Checks that the response has the expected format.
-3. Converts the data into a simple, consistent ResQAI format.
-4. Skips records that are missing important information instead of inventing values.
-5. Reports clear errors when the data source cannot be reached or is invalid.
+1. Loads disaster information from public or local data sources.
+2. Checks that each response has the expected format.
+3. Converts records into a consistent ResQAI format.
+4. Preserves the disaster type, source, location, time, and severity details.
+5. Skips records that are missing important information instead of inventing values.
+6. Reports clear errors when a data source cannot be reached or is invalid.
 
 In simple terms, ResQAI takes information from different disaster sources and prepares it for one emergency-response dashboard.
 
@@ -18,7 +19,7 @@ Supported disaster categories include earthquakes, floods, wildfires, storms, hu
 
 ## Current Status
 
-The data collection and normalization foundation is working and tested. Earthquakes are currently connected through USGS, and the normalizer can already represent other disaster types. The historical-data pipeline prepares a genuine NOAA dataset for machine-learning experiments. Training the final model, additional live sources, risk prediction, a database, GenAI/RAG, and a finished dashboard are future additions.
+The data collection and normalization foundation is working and tested. The shared format already represents earthquakes, floods, wildfires, storms, hurricanes, tornadoes, landslides, tsunamis, volcanic eruptions, droughts, and extreme temperatures. USGS earthquakes are the current live example, and NOAA storm events are available for historical-data experiments. Additional live providers, risk prediction, a database, GenAI/RAG, and a finished dashboard are future additions.
 
 ResQAI is intended to organize and prioritize information. It does not predict disasters.
 
@@ -56,7 +57,7 @@ External disaster sources
       Interactive dashboard
 ```
 
-At present, data collection and normalization are implemented for the USGS earthquake source, and the historical-data pipeline prepares NOAA storm-event history for ML. Risk rules, model training, emergency services, and the dashboard are planned.
+At present, the provider-neutral feed and normalization services are implemented for multiple disaster types. USGS provides the current live feed, while NOAA storm-event history supports the reusable data-preparation pipeline. Risk rules, model training, emergency services, and the dashboard are planned.
 
 ## Project Structure
 
@@ -91,9 +92,11 @@ ResQAI/
    `-- test_main.py
 ```
 
-## Data Source
+## Data Sources
 
-### Current source: USGS Earthquake Catalog GeoJSON feeds
+ResQAI is designed to combine live feeds and historical datasets from different disaster providers. Each provider can be converted into the same normalized record format.
+
+### Live source example: USGS Earthquake Catalog GeoJSON feeds
 
 - **Name:** United States Geological Survey (USGS) Earthquake Hazards Program GeoJSON feed.
 - **Information:** Recent earthquake events worldwide, including magnitude, place, time, depth, status, tsunami flag, alert, and event links.
@@ -101,7 +104,7 @@ ResQAI/
 - **Update frequency:** Summary feeds are near-real-time feeds intended to be checked about every minute. The selected `all_day.geojson` feed covers the previous 24 hours.
 - **API requirements:** HTTPS GET with an `Accept` header. The response is GeoJSON.
 - **API key:** Not required for this public feed.
-- **Limitations:** It covers earthquakes, not every disaster type; records can be preliminary and later revised; optional fields can be null; the all-day feed is a rolling window rather than historical storage; and USGS availability and usage policies still apply.
+- **Limitations:** This feed covers earthquakes only; records can be preliminary and later revised; optional fields can be null; the all-day feed is a rolling window rather than historical storage; and USGS availability and usage policies still apply.
 - **Why suitable:** It is an official scientific source, public, structured, global, actively updated, and includes location and severity-related fields useful for ResQAI monitoring. It also keeps the implementation dependency-free and secret-free.
 
 Source documentation: <https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php>
