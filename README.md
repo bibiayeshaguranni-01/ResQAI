@@ -2,120 +2,91 @@
 
 ## Overview
 
-ResQAI is a multi-disaster data analysis project. It combines cleaned disaster records into a common dataset for data quality checks, exploratory analysis, feature engineering, and future machine-learning experiments.
+ResQAI is a multi-disaster data preparation and analysis project. It combines six cleaned disaster datasets into a common structure for data-quality checks, exploratory analysis, feature engineering, and train/test preparation.
 
-The project covers droughts, earthquakes, volcanic eruptions, floods, forest fires, and tropical cyclones. It organizes disaster information; it does not currently predict disasters.
+The project covers earthquakes, floods, droughts, forest fires, volcanic eruptions, and tropical cyclones.
 
 ## Problem Statement
 
-Disaster datasets often use different column names, date formats, measurements, and missing-value conventions. This makes it difficult to compare disaster types or prepare them for analysis.
+Disaster datasets use different column names, date formats, measurements, and missing-value conventions. This makes it difficult to compare disaster types and prepare consistent analysis data.
 
-ResQAI standardizes shared fields while preserving measurements specific to each disaster type.
+ResQAI standardizes shared fields while preserving disaster-specific information.
 
 ## Objectives
 
-- Combine six disaster datasets into one analysis-ready dataset.
-- Standardize shared columns such as dates, coordinates, country, and disaster type.
-- Inspect missing values, duplicates, invalid values, and inconsistent categories.
-- Create date, duration, and location features.
-- Keep the workflow reproducible through a Jupyter Notebook.
+- Combine six disaster datasets.
+- Standardize shared columns.
+- Inspect missing values and duplicates.
+- Check invalid coordinates, dates, scores, and durations.
+- Create year, month, duration, and location features.
+- Prepare data for train/test processing.
 
 ## Key Features
 
 - Multi-disaster dataset preparation.
-- Common schema for cross-disaster comparison.
-- Disaster-specific feature preservation.
-- Date parsing and duration calculation.
-- Country and location-category cleaning.
+- Common schema for comparison.
+- Date and duration feature creation.
+- Country and location cleaning.
 - Missing-value and duplicate analysis.
-- Class-distribution analysis.
-- Reproducible CSV export.
+- Stratified train/test split.
+- Training-only preprocessing with imputation, scaling, and encoding.
 
 ## Dataset
 
-The project uses six cleaned disaster datasets with 26,173 records in total:
+The six cleaned datasets contain 26,173 records:
 
 | Disaster type | Records |
 | --- | ---: |
-| Drought | 240 |
 | Earthquake | 20,290 |
-| Volcanic eruption | 61 |
-| Flood | 2,126 |
 | Forest fire | 3,051 |
+| Flood | 2,126 |
 | Tropical cyclone | 405 |
+| Drought | 240 |
+| Volcanic eruption | 61 |
 | **Total** | **26,173** |
 
-The data includes descriptions, alert levels, dates, countries, ISO3 codes, coordinates, severity scores, and disaster-specific impact measurements.
-
-The cleaned master output contains common fields such as `description`, `alertlevel`, `alertscore`, `country`, `fromdate`, `todate`, `iso3`, `longitude`, `latitude`, and `disaster_type`.
+The data includes descriptions, alert levels, dates, countries, ISO3 codes, coordinates, severity scores, and disaster-specific measurements.
 
 ## Data Preprocessing
 
-The notebook:
+The notebook currently:
 
 1. Loads the six CSV datasets with pandas.
-2. Standardizes column names and removes unnecessary index columns.
-3. Adds a `disaster_type` label.
-4. Aligns shared columns across all datasets.
-5. Combines the records into a master dataset.
+2. Standardizes column names.
+3. Removes unnecessary index columns.
+4. Adds a `disaster_type` label.
+5. Combines the datasets into a common analysis table.
 6. Converts date columns to datetime values.
 7. Creates year, month, and event-duration features.
 8. Replaces invalid negative scores with missing values.
-9. Cleans country names and identifies multi-location records.
-10. Checks duplicates, missing values, coordinate ranges, and invalid dates.
+9. Cleans country values and identifies location types.
+10. Checks missing values, duplicates, coordinates, dates, and durations.
+11. Creates `X` and `y` for disaster-type classification.
+12. Splits the data using a stratified 80/20 split.
+13. Fits preprocessing only on the training data.
 
 ## Exploratory Data Analysis
 
-The analysis examines:
+The notebook checks:
 
-- Record counts by disaster type.
-- Alert-level distributions.
-- Missing values by column and disaster type.
-- Duplicate records and repeated descriptions.
-- Country and ISO3 distributions.
+- Disaster-type counts.
+- Alert-level counts.
+- Missing values.
+- Duplicate records and descriptions.
+- Country and ISO3 values.
 - Geographic and multi-location records.
 - Severity-score distributions.
-- Event duration and date ranges.
-- Invalid latitude, longitude, year, month, and duration values.
-
-Earthquakes represent the largest class, while eruptions represent the smallest.
-
-## Machine Learning
-
-## Model Evaluation
-
-## System Architecture
-
-```text
-Six cleaned disaster datasets
-              |
-              v
-       Data loading
-              |
-              v
-   Column standardization
-              |
-              v
-    Dataset combination
-              |
-              v
- Cleaning and feature engineering
-              |
-              v
-       Exploratory analysis
-              |
-              v
- Train/test preprocessing
-```
+- Event durations.
+- Invalid coordinates and dates.
 
 ## Technology Stack
 
-- Python 3.10 or newer.
-- pandas for loading, cleaning, and combining datasets.
-- NumPy for numerical operations.
-- scikit-learn for splitting and preprocessing.
-- Jupyter Notebook for the analysis workflow.
-- unittest for project tests.
+- Python
+- pandas
+- NumPy
+- scikit-learn
+- Jupyter Notebook
+- unittest
 
 ## Project Structure
 
@@ -135,16 +106,9 @@ ResQAI/
 
 ## Installation
 
-Create and activate a virtual environment:
-
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
-```
-
-Install the dependencies:
-
-```powershell
 python -m pip install -r requirements.txt
 ```
 
@@ -156,22 +120,9 @@ Open the notebook from the project directory:
 jupyter notebook ResQAI_Project.ipynb
 ```
 
-Run the application status command:
-
-```powershell
-$env:PYTHONPATH = "src"
-python -m resqai.main
-```
-
 Run the tests:
 
 ```powershell
 $env:PYTHONPATH = "src"
 python -m unittest discover -s tests -v
 ```
-
-## Results
-
-## Future Scope
-
-## Limitations
