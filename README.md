@@ -47,6 +47,8 @@ The six cleaned datasets contain 26,173 records:
 
 The data includes descriptions, alert levels, dates, countries, ISO3 codes, coordinates, severity scores, and disaster-specific measurements.
 
+Dataset source: [Global Disaster Events (2000-2025) on Kaggle](https://www.kaggle.com/datasets/elvinrustam/global-disaster-events-20002025)
+
 ## Data Preprocessing
 
 The notebook currently:
