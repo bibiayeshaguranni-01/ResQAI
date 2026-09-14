@@ -8,17 +8,16 @@ The project covers droughts, earthquakes, volcanic eruptions, floods, forest fir
 
 ## Problem Statement
 
-Disaster datasets often come from different sources and use different column names, date formats, measurements, and missing-value conventions. This makes it difficult to compare disaster types or prepare them for analysis.
+Disaster datasets often use different column names, date formats, measurements, and missing-value conventions. This makes it difficult to compare disaster types or prepare them for analysis.
 
-ResQAI addresses this problem by standardizing shared fields while preserving measurements that are specific to each disaster type.
+ResQAI standardizes shared fields while preserving measurements specific to each disaster type.
 
 ## Objectives
 
 - Combine six disaster datasets into one analysis-ready dataset.
 - Standardize shared columns such as dates, coordinates, country, and disaster type.
 - Inspect missing values, duplicates, invalid values, and inconsistent categories.
-- Create useful date, duration, and location features.
-- Prepare reliable inputs for future machine-learning models.
+- Create date, duration, and location features.
 - Keep the workflow reproducible through a Jupyter Notebook.
 
 ## Key Features
@@ -29,7 +28,7 @@ ResQAI addresses this problem by standardizing shared fields while preserving me
 - Date parsing and duration calculation.
 - Country and location-category cleaning.
 - Missing-value and duplicate analysis.
-- Class-distribution analysis for machine learning.
+- Class-distribution analysis.
 - Reproducible CSV export.
 
 ## Dataset
@@ -52,7 +51,7 @@ The cleaned master output contains common fields such as `description`, `alertle
 
 ## Data Preprocessing
 
-The notebook performs the following preparation steps:
+The notebook:
 
 1. Loads the six CSV datasets with pandas.
 2. Standardizes column names and removes unnecessary index columns.
@@ -79,25 +78,11 @@ The analysis examines:
 - Event duration and date ranges.
 - Invalid latitude, longitude, year, month, and duration values.
 
-Earthquakes represent the largest class, while eruptions represent the smallest. This imbalance must be considered before training a classification model.
+Earthquakes represent the largest class, while eruptions represent the smallest.
 
 ## Machine Learning
 
-The current notebook prepares a classification dataset where `disaster_type` is the target. Candidate features include alert level, alert scores, longitude, latitude, year, month, and calculated duration.
-
-The workflow separates the target from the input features, performs a stratified 80/20 train/test split, and uses a preprocessing pipeline:
-
-- Numeric values are median-imputed and scaled.
-- The categorical alert level is filled using the most frequent value and one-hot encoded.
-- The preprocessor is fitted only on the training data.
-
-No final model has been trained yet.
-
 ## Model Evaluation
-
-Model evaluation is not yet available because model training is still pending. Future experiments should use metrics appropriate for the selected task, including accuracy, balanced accuracy, precision, recall, F1 score, a confusion matrix, and per-class results.
-
-Because the classes are imbalanced, accuracy alone should not be used to judge performance.
 
 ## System Architecture
 
@@ -121,9 +106,6 @@ Six cleaned disaster datasets
               |
               v
  Train/test preprocessing
-              |
-              v
- Future ML models and risk services
 ```
 
 ## Technology Stack
@@ -168,7 +150,7 @@ python -m pip install -r requirements.txt
 
 ## Usage
 
-Open the notebook from the project directory to run the complete data workflow:
+Open the notebook from the project directory:
 
 ```powershell
 jupyter notebook ResQAI_Project.ipynb
@@ -190,29 +172,6 @@ python -m unittest discover -s tests -v
 
 ## Results
 
-- Six disaster datasets were combined into a common analysis workflow.
-- The combined dataset contains 26,173 records.
-- Shared dates, coordinates, countries, alert fields, and disaster labels are available for comparison.
-- Date and duration features were created.
-- Missing values, duplicate records, invalid coordinates, and unusual durations were investigated.
-- Training and test data can now be prepared without fitting preprocessing on the test set.
-- No final model performance results are available yet.
-
 ## Future Scope
 
-- Train and compare classification models.
-- Improve class balancing and validation strategies.
-- Add visual dashboards for disaster trends and locations.
-- Add explainable risk scoring.
-- Preserve more disaster-specific features in model experiments.
-- Add automated data-quality reports.
-- Develop emergency-response services.
-
 ## Limitations
-
-- The six datasets use different disaster-specific columns.
-- The target classes are highly imbalanced.
-- Some values, coordinates, and dates may be missing.
-- A final machine-learning model has not been trained.
-- Model evaluation results are not available yet.
-- The project does not currently provide real-time data or a completed dashboard.
