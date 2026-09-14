@@ -1,5 +1,6 @@
 # Python cache
 __pycache__/
+*.csv
 *.py[cod]
 
 # Local environment
@@ -10,5 +11,5 @@ __pycache__/
 .pytest_cache/
 
 # Notebook and editor files
-.ipynb_checkpoints/
+*.ipynb_checkpoints/
 .vscode/
