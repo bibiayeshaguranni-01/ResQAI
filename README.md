@@ -18,7 +18,7 @@ Supported disaster categories include earthquakes, floods, wildfires, storms, hu
 
 ## Current Status
 
-The data collection and normalization foundation is working and tested. Earthquakes are currently connected through USGS, and the normalizer can already represent other disaster types. Phase 3 now prepares a genuine NOAA historical dataset for machine-learning experiments. Training the final model, additional live sources, risk prediction, a database, GenAI/RAG, and a finished dashboard are future additions.
+The data collection and normalization foundation is working and tested. Earthquakes are currently connected through USGS, and the normalizer can already represent other disaster types. The historical-data pipeline prepares a genuine NOAA dataset for machine-learning experiments. Training the final model, additional live sources, risk prediction, a database, GenAI/RAG, and a finished dashboard are future additions.
 
 ResQAI is intended to organize and prioritize information. It does not predict disasters.
 
@@ -56,7 +56,7 @@ External disaster sources
       Interactive dashboard
 ```
 
-At present, data collection and normalization are implemented for the USGS earthquake source, and Phase 3 prepares NOAA storm-event history for ML. Risk rules, model training, emergency services, and the dashboard are planned.
+At present, data collection and normalization are implemented for the USGS earthquake source, and the historical-data pipeline prepares NOAA storm-event history for ML. Risk rules, model training, emergency services, and the dashboard are planned.
 
 ## Project Structure
 
@@ -66,6 +66,13 @@ ResQAI/
 |-- .gitignore
 |-- README.md
 |-- requirements.txt
+|-- Drought_clean.csv
+|-- Earthquake_clean.csv
+|-- Eruption_clean.csv
+|-- Flood_clean.csv
+|-- Forest_Fires_clean.csv
+|-- Tropical_Cyclone_clean.csv
+|-- master_disaster_dataset.csv
 |-- src/
 |   `-- resqai/
 |       |-- __init__.py
@@ -156,7 +163,7 @@ $env:PYTHONPATH = "src"
 python -m unittest discover -s tests -v
 ```
 
-## Phase 3: Historical Dataset and Data Preprocessing
+## Historical Dataset and Preprocessing
 
 ### ML problem selected
 
@@ -217,9 +224,9 @@ Cleaning removes duplicate rows and duplicate event IDs, removes records without
 
 The dataset covers NOAA-recorded storm events in the United States, not every disaster worldwide. Reporting practices changed over time and differ by event type and location. A casualty label records reported impact, not total harm, and the positive class is much smaller than the negative class. Some measurements are missing, and the 2023 file is a fixed historical snapshot that may be revised by NOAA.
 
-It is suitable for Phase 3 because it is an official, public, documented historical dataset with many records, multiple disaster categories, event timing and location, measurable severity fields, and explicit impact outcomes. It is also large enough to demonstrate inspection, cleaning, feature engineering, categorical encoding, scaling, and a stratified split without fabricating observations.
+It is suitable for the historical-data pipeline because it is an official, public, documented dataset with many records, multiple disaster categories, event timing and location, measurable severity fields, and explicit impact outcomes. It is also large enough to demonstrate inspection, cleaning, feature engineering, categorical encoding, scaling, and a stratified split without fabricating observations.
 
-### Reusable Phase 3 functions
+### Reusable pipeline functions
 
 The implementation is in `src/resqai/data/historical_storm_events.py`:
 
@@ -230,7 +237,7 @@ The implementation is in `src/resqai/data/historical_storm_events.py`:
 - `split_and_preprocess()` separates `X` and `y`, creates a stratified 80/20 split, fits imputation/encoding/scaling on training data only, and transforms the test data.
 - `prepare_storm_events()` runs the complete pipeline without training a model.
 
-### Complete Phase 3 pipeline
+### Complete pipeline
 
 ```text
 DATASET
@@ -263,7 +270,7 @@ PREPROCESSING
    most-frequent-impute and one-hot encode categorical columns
 ```
 
-No final ML model is trained in Phase 3. The phase stops after producing reusable, transformed training and test data.
+No final ML model is trained yet. The pipeline stops after producing reusable, transformed training and test data.
 
 ## Data Pipeline
 
@@ -335,10 +342,10 @@ The example values are a deterministic test fixture, clearly labelled as such; n
 - `src/resqai/api/usgs_earthquakes.py`: `feed_settings()` reads configuration; `fetch_usgs_feed()` performs the request; `validate_feed()` checks the response envelope; custom exceptions distinguish failure categories.
 - `src/resqai/api/disaster_feeds.py`: `fetch_disaster_feed()` loads and validates a GeoJSON feed from any provider.
 - `src/resqai/data/normalization.py`: `normalize_usgs_features()` converts provider records into stable ResQAI dictionaries and skips unusable records.
-- `src/resqai/data/historical_storm_events.py`: Phase 3 loader, inspection, cleaning, feature engineering, split, and preprocessing functions.
+- `src/resqai/data/historical_storm_events.py`: historical-data loading, inspection, cleaning, feature engineering, splitting, and preprocessing functions.
 - `src/resqai/services/disaster_data.py`: `get_current_earthquakes()` preserves the USGS service and `get_current_disasters()` supports generic GeoJSON providers.
 - `tests/test_data_pipeline.py`: tests success, missing values, malformed data, HTTP errors, timeout behavior, and configuration validation.
-- `tests/test_historical_storm_events.py`: tests the Phase 3 dataset pipeline.
+- `tests/test_historical_storm_events.py`: tests the historical dataset pipeline.
 
 ## What You Need to Configure
 
