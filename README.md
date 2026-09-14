@@ -1,4 +1,4 @@
-# ResQAI
+# ResQAI - AI-Powered Disaster Risk & Emergency Response System
 
 ## Project Overview
 
