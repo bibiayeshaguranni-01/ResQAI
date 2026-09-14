@@ -4,7 +4,7 @@
 
 ResQAI is a multi-disaster information platform for collecting, validating, normalizing, and preparing emergency data. It uses one consistent format for earthquakes, floods, wildfires, storms, hurricanes, tornadoes, landslides, tsunamis, volcanic eruptions, droughts, and extreme temperatures.
 
-The project combines live disaster-feed integration with historical-data preprocessing. USGS earthquakes are the current live-feed example, while NOAA storm-event data supports historical analysis and machine-learning preparation.
+The project uses six cleaned disaster CSV files for analysis and provides live-feed integration for future provider updates. Each file keeps disaster-specific measurements while sharing useful fields such as description, dates, location, severity, and impact.
 
 ## Problem Statement
 
@@ -27,7 +27,7 @@ ResQAI addresses the data-organization problem. It does not predict when or wher
 - Provider-neutral GeoJSON feed support.
 - USGS earthquake feed integration.
 - Shared record format for multiple disaster types.
-- Historical NOAA storm-event loading and cleaning.
+- Loading and cleaning six disaster CSV files.
 - Duplicate detection and invalid-value handling.
 - Feature engineering for event month, duration, and reported casualties.
 - Leakage-safe train/test preprocessing.
@@ -64,17 +64,16 @@ Data collection, validation, normalization, and historical preprocessing are imp
 
 ## Dataset
 
-The repository contains cleaned datasets for several disaster categories:
+The project dataset contains six cleaned CSV files:
 
-- `Drought_clean.csv`
-- `Earthquake_clean.csv`
-- `Eruption_clean.csv`
-- `Flood_clean.csv`
-- `Forest_Fires_clean.csv`
-- `Tropical_Cyclone_clean.csv`
-- `master_disaster_dataset.csv`
+- `Drought_clean.csv`: 240 records, including drought severity, affected area, duration, and location.
+- `Earthquake_clean.csv`: 20,290 records, including magnitude, depth, exposed population, and location.
+- `Eruption_clean.csv`: 61 records, including volcanic explosivity, population exposure, severity, and location.
+- `Flood_clean.csv`: 2,126 records, including severity, deaths, displaced people, and location.
+- `Forest_Fires_clean.csv`: 3,051 records, including burned area, affected people, duration, and location.
+- `Tropical_Cyclone_clean.csv`: 405 records, including wind speed, storm surge, vulnerability, category, and location.
 
-The historical machine-learning pipeline uses the NOAA Storm Events Database 2023 detail file. It contains 75,593 United States storm-event records and 51 columns, including event type, location, timing, magnitude, deaths, and injuries.
+Together, the six files contain 26,173 records. The files use different column names for disaster-specific measurements, but they share common concepts such as description, start date, end date, country, coordinates, severity, and impact.
 
 The current live source is the USGS Earthquake Catalog GeoJSON feed:
 
@@ -85,70 +84,63 @@ The USGS feed is public and does not require an API key. It provides recent eart
 
 ## Data Preprocessing
 
-The historical-data pipeline:
+The CSV preprocessing workflow:
 
-1. Loads the NOAA CSV from a URL or local path.
-2. Inspects shape, types, missing values, duplicates, and invalid ranges.
-3. Removes duplicate rows and duplicate event IDs.
-4. Rejects unusable identity, event type, or impact values.
-5. Rejects negative death and injury counts.
-6. Converts invalid measurements to missing values for later imputation.
-7. Separates features from the target before preprocessing.
-8. Fits preprocessing only on the training data.
+1. Loads each disaster CSV from the project directory.
+2. Inspects columns, row counts, missing values, and data types.
+3. Standardizes date and coordinate fields where possible.
+4. Preserves disaster-specific severity and impact measurements.
+5. Checks numeric fields for invalid values.
+6. Keeps the disaster category and source fields for analysis.
+7. Creates a consistent analysis-ready representation without inventing values.
 
 ## Exploratory Data Analysis (EDA)
 
-The NOAA dataset inspection found:
+The current dataset inventory is:
 
-- Duplicate complete rows: 0.
-- Duplicate event IDs: 0.
-- Invalid latitude values: 0.
-- Invalid longitude values: 0.
-- Negative death or injury counts: 0.
-- Event types: 51.
-- States or territories: 67.
-- Records with a reported casualty: 927.
-- Records without a reported casualty: 74,666.
+| Disaster type | Records |
+| --- | ---: |
+| Drought | 240 |
+| Earthquake | 20,290 |
+| Eruption | 61 |
+| Flood | 2,126 |
+| Forest fire | 3,051 |
+| Tropical cyclone | 405 |
+| **Total** | **26,173** |
 
-The target is strongly imbalanced, so accuracy alone is not sufficient for future model evaluation. Precision, recall, F1 score, and a confusion matrix should also be used.
+Exploration should compare event counts, severity, duration, geographic coverage, exposed populations, deaths, displacement, and other impact fields by disaster type. Because the six files do not use one identical schema, analysis should identify shared fields first and then use disaster-specific fields where available.
 
 ## Feature Engineering
 
-The pipeline creates the target `casualty_reported`:
+Potential shared features include disaster type, country, start date, end date, longitude, latitude, severity, and impact. Useful derived features include event duration, event year, event month, and normalized severity values.
 
-```text
-1 if deaths_direct + deaths_indirect + injuries_direct + injuries_indirect > 0
-0 otherwise
-```
-
-Numeric features include year, event month, magnitude, beginning range, beginning latitude, beginning longitude, and event duration in hours.
-
-Categorical features include event type, state, month name, county-zone type, magnitude type, and beginning azimuth.
-
-Death and injury columns create the target and are excluded from the feature matrix to prevent target leakage.
+Disaster-specific features include earthquake magnitude and depth, flood deaths and displacement, forest-fire area and affected people, cyclone wind speed and storm surge, drought affected area, and eruption explosivity and population exposure. Any future prediction target must be defined carefully so that target-related impact columns are not included as input features.
 
 ## Machine Learning Approach
 
-The first machine-learning problem is binary classification of whether a reported storm event has any casualty. The pipeline uses a stratified 80/20 train/test split with `random_state=42`.
+The six CSV files can support classification, regression, clustering, and descriptive analysis. A final target has not been selected yet because the disaster files contain different outcome fields. A future model should use a documented target, a stratified or appropriate split, and preprocessing fitted only on the training data.
 
-Numeric features are median-imputed and scaled. Categorical features are filled with their most frequent value and one-hot encoded. The transformer is fitted only on `X_train` and then applied to `X_test`.
+Numeric features can be imputed and scaled. Categorical features can be filled and one-hot encoded. The same preprocessing decisions should be applied consistently within each model experiment.
 
 ## Models Used
 
-No final classification model has been trained yet. The current implementation prepares clean, transformed training and test data for future models.
+No final machine-learning model has been trained yet. The current work focuses on preparing and understanding the six disaster datasets.
 
 ## Model Evaluation
 
-Model evaluation is not available yet because model training has not been added. Future evaluation should use metrics suitable for the imbalanced target, including precision, recall, F1 score, and a confusion matrix.
+Model evaluation is not available yet because a final target and model have not been selected. Future evaluation should use metrics appropriate for the selected task, such as precision, recall, F1 score, a confusion matrix, mean absolute error, or R-squared.
 
 ## Results & Findings
 
 - Disaster records can be represented with a shared normalized structure.
 - The feed layer validates data before normalization.
 - Invalid or incomplete records are skipped instead of fabricated.
-- The NOAA dataset is large enough for meaningful preprocessing experiments.
-- The casualty target is strongly imbalanced.
-- The preprocessing pipeline avoids target leakage.
+- The six files contain 26,173 records across six disaster categories.
+- Earthquakes make up the largest part of the available records.
+- Each disaster type provides different severity and impact measurements.
+- Shared date and location fields can support cross-disaster comparisons.
+- Disaster-specific fields are needed for detailed analysis.
+- A final target, model, and evaluation result have not been selected.
 - A final risk model and dashboard are not part of the current implementation.
 
 ## Technology Stack
@@ -175,7 +167,6 @@ ResQAI/
 |-- Flood_clean.csv
 |-- Forest_Fires_clean.csv
 |-- Tropical_Cyclone_clean.csv
-|-- master_disaster_dataset.csv
 |-- src/
 |   `-- resqai/
 |       |-- api/
@@ -271,9 +262,8 @@ python -m resqai.main
 ## Limitations
 
 - Only the USGS earthquake feed is currently connected as a live provider.
-- The NOAA historical dataset covers United States storm events, not every disaster worldwide.
-- The casualty label represents reported impact, not total harm.
-- The dataset is imbalanced and some measurements are missing.
+- The six CSV files use different schemas and have different available impact fields.
+- Some measurements and coordinates may be missing.
 - No final machine-learning model or risk prediction system is available yet.
 - The USGS all-day feed is a rolling 24-hour window.
 - External feeds can be preliminary, revised, unavailable, or changed by their providers.
