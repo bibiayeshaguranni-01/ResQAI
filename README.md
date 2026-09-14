@@ -75,6 +75,61 @@ The project dataset contains six cleaned CSV files:
 
 Together, the six files contain 26,173 records. The files use different column names for disaster-specific measurements, but they share common concepts such as description, start date, end date, country, coordinates, severity, and impact.
 
+### How the Master Dataset Was Created
+
+The notebook creates `master_disaster_dataset.csv` from the six cleaned CSV files. The master file is a standardized analysis output, not a seventh source dataset.
+
+1. Load the six cleaned CSV files with pandas.
+2. Add a `disaster_type` label to each file.
+3. Standardize column names, including dates, coordinates, and GDACS IDs.
+4. Use one common schema:
+
+   `description`, `alertlevel`, `alertscore`, `episodealertlevel`, `episodealertscore`, `country`, `fromdate`, `todate`, `iso3`, `gdacs_id`, `longitude`, `latitude`, and `disaster_type`.
+
+5. Add missing schema columns to each dataset with `NaN` values.
+6. Select the common columns in the same order for every dataset.
+7. Combine the six tables with `pd.concat(..., ignore_index=True)`.
+8. Save the result as `master_disaster_dataset.csv`.
+
+The notebook uses this process:
+
+```python
+import numpy as np
+import pandas as pd
+
+datasets = {
+    "Drought": pd.read_csv("Drought_clean.csv"),
+    "Earthquake": pd.read_csv("Earthquake_clean.csv"),
+    "Eruption": pd.read_csv("Eruption_clean.csv"),
+    "Flood": pd.read_csv("Flood_clean.csv"),
+    "Forest Fire": pd.read_csv("Forest_Fires_clean.csv"),
+    "Tropical Cyclone": pd.read_csv("Tropical_Cyclone_clean.csv"),
+}
+
+master_columns = [
+    "description", "alertlevel", "alertscore",
+    "episodealertlevel", "episodealertscore", "country",
+    "fromdate", "todate", "iso3", "gdacs_id",
+    "longitude", "latitude", "disaster_type",
+]
+
+prepared = []
+for disaster_type, dataframe in datasets.items():
+    dataframe = dataframe.copy()
+    dataframe["disaster_type"] = disaster_type
+
+    for column in master_columns:
+        if column not in dataframe.columns:
+            dataframe[column] = np.nan
+
+    prepared.append(dataframe[master_columns])
+
+master_disaster_dataset = pd.concat(prepared, ignore_index=True)
+master_disaster_dataset.to_csv("master_disaster_dataset.csv", index=False)
+```
+
+This produces a 26,173-row, 13-column master dataset while retaining the original six cleaned files as the source datasets.
+
 The current live source is the USGS Earthquake Catalog GeoJSON feed:
 
 - Documentation: <https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php>
