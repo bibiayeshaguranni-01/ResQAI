@@ -41,7 +41,7 @@ The datasets contain information such as descriptions, dates, countries, coordin
 
 ## Master Dataset
 
-`master_disaster_dataset.csv` is created from the six source files in `ResQAI_Project.ipynb`.
+`master_disaster_dataset_cleaned.csv` is the committed output created from the six source files in `ResQAI_Project.ipynb`. The notebook may create `master_disaster_dataset.csv` temporarily before cleaning, but that intermediate file is not committed.
 
 The notebook:
 
@@ -64,9 +64,9 @@ The notebook:
    - `disaster_type`
 5. Adds missing columns with `NaN` values when needed.
 6. Combines all records with `pandas.concat()`.
-7. Saves the result as `master_disaster_dataset.csv`.
+7. Saves the cleaned result as `master_disaster_dataset_cleaned.csv`.
 
-The final master dataset contains 26,173 rows and 13 columns.
+The final cleaned master dataset contains 26,173 rows and 13 columns.
 
 ## Data Processing
 
@@ -99,7 +99,7 @@ ResQAI/
 |-- Flood_clean.csv
 |-- Forest_Fires_clean.csv
 |-- Tropical_Cyclone_clean.csv
-|-- master_disaster_dataset.csv
+|-- master_disaster_dataset_cleaned.csv
 |-- src/resqai/
 `-- tests/
 ```
