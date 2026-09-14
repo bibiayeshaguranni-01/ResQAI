@@ -1,28 +1,30 @@
-# Python
+# Python bytecode and test caches
 __pycache__/
-*.py[cod]
+*.pyc
 *.pyo
+*.pyd
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 
-# Virtual environments
+# Local virtual environments
 .venv/
 venv/
 env/
 
-# Environment and secrets
+# Environment files and secrets
 .env
 
-# Local data and generated artifacts
+# Local data and generated machine-learning artifacts
 data/raw/*
 data/processed/*
+# All CSV files, including downloaded root-level datasets
 *.csv
 *.parquet
 *.joblib
 *.pkl
 
-# Tooling and OS files
+# Editor and operating-system files
 .vscode/
 .ipynb_checkpoints/
 .DS_Store
